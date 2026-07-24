@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Family — Multi-Generational Wealth & Heritage Platform</title>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js CDN for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">
+          <i class="fa-solid fa-crown"></i>
+        </div>
+        <div class="brand-text">
+          <h2>Business Family</h2>
+          <p>Ta Mao Business</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <div class="nav-section-label">Core Management</div>
+        <a class="nav-item active" data-tab="dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Executive Overview</span>
+        </a>
+        <a class="nav-item" data-tab="tree">
+          <i class="fa-solid fa-diagram-project"></i>
+          <span>Family Tree & Nodes</span>
+        </a>
+        <a class="nav-item" data-tab="finances">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Family Finances (P&L)</span>
+        </a>
+
+        <div class="nav-section-label">Enterprise & Governance</div>
+        <a class="nav-item" data-tab="portfolio">
+          <i class="fa-solid fa-building-columns"></i>
+          <span>Business Holdings</span>
+        </a>
+        <a class="nav-item" data-tab="directory">
+          <i class="fa-solid fa-users"></i>
+          <span>Member Directory</span>
+        </a>
+        <a class="nav-item" data-tab="timeline">
+          <i class="fa-solid fa-timeline"></i>
+          <span>Family History & Milestones</span>
+        </a>
+        <a class="nav-item" data-tab="documents">
+          <i class="fa-solid fa-file-contract"></i>
+          <span>Family Vault & Rules</span>
+        </a>
+      </nav>
+
+      <!-- Data Export / Import Controls -->
+      <div style="padding: 1rem 0; border-top: 1px solid var(--border-color); margin-top: auto;">
+        <div class="nav-section-label" style="padding-top:0;">Data Governance</div>
+        <div style="display:flex; gap:8px; padding: 0 0.5rem;">
+          <button class="btn btn-secondary" style="flex:1; font-size:0.75rem; padding:6px;" onclick="exportAppData()">
+            <i class="fa-solid fa-download"></i> Backup Data
+          </button>
+          <button class="btn btn-secondary" style="flex:1; font-size:0.75rem; padding:6px;" onclick="document.getElementById('import-file-input').click()">
+            <i class="fa-solid fa-upload"></i> Import
+          </button>
+          <input type="file" id="import-file-input" style="display:none" accept=".json" onchange="importAppData(event)">
+        </div>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar">AN</div>
+        <div class="user-info">
+          <h4>Mao Vannarong</h4>
+          <p><i class="fa-solid fa-shield-halved"></i> Family Leader</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+      
+      <!-- Top Navigation Header -->
+      <header class="top-header">
+        <div class="header-title">
+          <h2 id="page-title">Executive Overview</h2>
+        </div>
+
+        <div class="header-actions">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="global-search" placeholder="Search members, transactions, businesses..." onkeyup="handleGlobalSearch(event)">
+          </div>
+
+          <!-- Role Selector -->
+          <select id="role-selector" class="form-control" style="width: 150px; padding: 6px 12px;" onchange="handleRoleChange(this.value)">
+            <option value="ADMIN">Role: Admin</option>
+            <option value="FAMILY_LEADER" selected>Role: Leader</option>
+            <option value="MEMBER">Role: Member</option>
+          </select>
+
+          <!-- Theme Toggle -->
+          <button class="icon-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <!-- Quick Action Buttons -->
+          <button class="btn btn-primary" onclick="openModal('transaction-modal')">
+            <i class="fa-solid fa-plus"></i> Log Transaction
+          </button>
+          <button class="btn btn-emerald" onclick="openModal('member-modal')">
+            <i class="fa-solid fa-user-plus"></i> Add Member
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <div class="content-body">
+
+        <!-- TAB 1: EXECUTIVE DASHBOARD OVERVIEW -->
+        <div class="tab-pane active" id="tab-dashboard">
+          
+          <!-- Hero Banner with Generated Graphic background -->
+          <div class="hero-banner" style="background-image: url('photo_2026-06-19_18-28-22.jpg');">
+            <div class="hero-overlay">
+              <h1>The Vathanoch Family Empire</h1>
+              <p>Hello អា ឆី ពៅ វឌ្ឍណុច</p>
+            </div>
+          </div>
+
+          <!-- Key Performance Cards -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Total Family Net Worth</span>
+                <div class="metric-icon icon-emerald"><i class="fa-solid fa-vault"></i></div>
+              </div>
+              <div class="metric-value" id="metric-networth">$18,300,000</div>
+              <div class="metric-footer">
+                <span class="metric-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +14.2%</span>
+                <span>vs last year</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Monthly Combined Income</span>
+                <div class="metric-icon icon-blue"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+              </div>
+              <div class="metric-value" id="metric-income">$245,800</div>
+              <div class="metric-footer">
+                <span class="metric-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +8.1%</span>
+                <span>businesses & dividends</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Monthly Family Expenses</span>
+                <div class="metric-icon icon-rose"><i class="fa-solid fa-credit-card"></i></div>
+              </div>
+              <div class="metric-value" id="metric-expenses">$42,300</div>
+              <div class="metric-footer">
+                <span class="metric-trend trend-down"><i class="fa-solid fa-arrow-trend-down"></i> -3.5%</span>
+                <span>household & operations</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Family Members / Nodes</span>
+                <div class="metric-icon icon-gold"><i class="fa-solid fa-sitemap"></i></div>
+              </div>
+              <div class="metric-value" id="metric-members">5 Active Members</div>
+              <div class="metric-footer">
+                <span>4 Household Branches</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goals & Wealth Targets Progress -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fa-solid fa-bullseye"></i> Family Wealth & Strategic Goals (2026–2030)</div>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
+                  <span>$25M Empire Net Worth Goal</span>
+                  <span style="color:var(--accent-emerald);">73% ($18.3M / $25M)</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:73%;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
+                  <span>Education & Heir Trust Fund</span>
+                  <span style="color:var(--accent-cyan);">90% ($4.5M / $5M)</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:90%; background:linear-gradient(90deg, #06b6d4, #3b82f6);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
+                  <span>Emergency Reserves & Debt Clearance</span>
+                  <span style="color:var(--accent-gold);">100% (Fully Funded)</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:100%; background:linear-gradient(90deg, #f59e0b, #10b981);"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Analytics & Recent Activity Row -->
+          <div class="dashboard-grid">
+            
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span>Cash Flow & Dividend Growth (2026)</span>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="cashflow-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <i class="fa-solid fa-chart-pie"></i>
+                  <span>Asset Allocation</span>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="allocation-chart"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Recent Financial Transactions -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Recent Family Transactions</span>
+              </div>
+              <button class="btn btn-secondary" onclick="switchTab('finances')">View All Ledger</button>
+            </div>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Member / Branch</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-transactions-list">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 2: FAMILY TREE & HIERARCHY VISUALIZER -->
+        <div class="tab-pane" id="tab-tree">
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title">
+                <i class="fa-solid fa-diagram-project"></i>
+                <span>Family Tree & Node Structure Visualizer</span>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button class="btn btn-secondary" onclick="renderFamilyTree()"><i class="fa-solid fa-rotate"></i> Refresh View</button>
+                <button class="btn btn-emerald" onclick="openModal('member-modal')"><i class="fa-solid fa-user-plus"></i> Add Node</button>
+              </div>
+            </div>
+            
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+              Click on any node to view personal credentials, branch allocation, and financial contribution summary.
+            </p>
+
+            <div class="tree-container">
+              <div class="tree-nodes-wrapper" id="tree-canvas">
+                <!-- Dynamically generated Family Tree structure -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: FAMILY FINANCES (P&L, EXPENSE & INCOME) -->
+        <div class="tab-pane" id="tab-finances">
+          <div class="dashboard-grid">
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title"><i class="fa-solid fa-sack-dollar"></i> Family Income Sources</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="income-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title"><i class="fa-solid fa-basket-shopping"></i> Expense Category Breakdown</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="expense-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fa-solid fa-list-check"></i> Master Financial Ledger</div>
+              <button class="btn btn-primary" onclick="openModal('transaction-modal')">+ Log Transaction</button>
+            </div>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Title / Description</th>
+                    <th>Member</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="full-ledger-list">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: BUSINESS HOLDINGS & ASSETS -->
+        <div class="tab-pane" id="tab-portfolio">
+          <div class="panel-header" style="margin-bottom:1.5rem;">
+            <div>
+              <h2 style="font-size:1.4rem; font-weight:800;">Family Business Portfolio</h2>
+              <p style="color:var(--text-muted); font-size:0.85rem;">Active commercial entities and enterprise asset investments managed by the family.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('business-modal')">+ Add Business Entity</button>
+          </div>
+
+          <div class="portfolio-grid" id="business-portfolio-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- TAB 5: MEMBER DIRECTORY -->
+        <div class="tab-pane" id="tab-directory">
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fa-solid fa-users-viewfinder"></i> Family Member Roster</div>
+              <button class="btn btn-emerald" onclick="openModal('member-modal')"><i class="fa-solid fa-user-plus"></i> Add New Member</button>
+            </div>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Member Name</th>
+                    <th>Branch / Node</th>
+                    <th>Role</th>
+                    <th>Occupation</th>
+                    <th>Contact Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="member-directory-list">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: TIMELINE & MILESTONES -->
+        <div class="tab-pane" id="tab-timeline">
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fa-solid fa-timeline"></i> Family Empire Timeline & Historical Milestones</div>
+            </div>
+            <div style="position:relative; padding-left:30px; border-left:2px solid var(--accent-primary); margin: 1.5rem 0;">
+              
+              <div style="margin-bottom:2rem; position:relative;">
+                <div style="position:absolute; left:-37px; top:0; width:16px; height:16px; border-radius:50%; background:var(--accent-gold); border:3px solid var(--bg-secondary);"></div>
+                <h4 style="font-size:1.1rem; font-weight:700; color:var(--accent-gold);">2026 — Governance Charter & Heritage Trust Ratified</h4>
+                <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Formalized the Family Constitution, distribution covenants, and voting rules for 3rd generation heirs.</p>
+              </div>
+
+              <div style="margin-bottom:2rem; position:relative;">
+                <div style="position:absolute; left:-37px; top:0; width:16px; height:16px; border-radius:50%; background:var(--accent-primary); border:3px solid var(--bg-secondary);"></div>
+                <h4 style="font-size:1.1rem; font-weight:700;">2022 — Acquisition of Heritage Boutique Hotel Chain</h4>
+                <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Expanded family commercial portfolio into luxury hospitality across 4 major coastal cities.</p>
+              </div>
+
+              <div style="margin-bottom:2rem; position:relative;">
+                <div style="position:absolute; left:-37px; top:0; width:16px; height:16px; border-radius:50%; background:var(--accent-cyan); border:3px solid var(--bg-secondary);"></div>
+                <h4 style="font-size:1.1rem; font-weight:700;">2015 — Launch of Vanguard Family Logistics</h4>
+                <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Established cold chain transport and logistics operations, now generating $890,000+ annual revenue.</p>
+              </div>
+
+              <div style="position:relative;">
+                <div style="position:absolute; left:-37px; top:0; width:16px; height:16px; border-radius:50%; background:var(--accent-emerald); border:3px solid var(--bg-secondary);"></div>
+                <h4 style="font-size:1.1rem; font-weight:700;">1998 — Foundation of Nguyen Real Estate Group</h4>
+                <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Founded by Alexander Nguyen, establishing the cornerstone asset of the family empire.</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 7: FAMILY VAULT & CHARTER -->
+        <div class="tab-pane" id="tab-documents">
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title"><i class="fa-solid fa-shield-halved"></i> Family Governance & Document Vault</div>
+            </div>
+            <div class="portfolio-grid">
+              
+              <div class="business-card">
+                <div class="business-head">
+                  <div class="business-icon" style="background:linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-scroll"></i></div>
+                  <span class="status-pill status-active">Ratified</span>
+                </div>
+                <div class="business-title">
+                  <h3>Family Constitution & Charter 2026</h3>
+                  <p>Core governance principles, voting power, and succession protocols.</p>
+                </div>
+                <button class="btn btn-secondary" style="margin-top:1rem; width:100%;" onclick="showToast('Downloading Constitution PDF...')"><i class="fa-solid fa-download"></i> Download Document</button>
+              </div>
+
+              <div class="business-card">
+                <div class="business-head">
+                  <div class="business-icon" style="background:linear-gradient(135deg, #4f46e5, #4338ca);"><i class="fa-solid fa-vault"></i></div>
+                  <span class="status-pill status-active">Active Trust</span>
+                </div>
+                <div class="business-title">
+                  <h3>Master Heritage Family Trust</h3>
+                  <p>Legal structure and asset distribution rules for 3rd generation heirs.</p>
+                </div>
+                <button class="btn btn-secondary" style="margin-top:1rem; width:100%;" onclick="showToast('Opening Secure Vault File...')"><i class="fa-solid fa-lock"></i> View Trust Vault</button>
+              </div>
+
+              <div class="business-card">
+                <div class="business-head">
+                  <div class="business-icon" style="background:linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-calendar-check"></i></div>
+                  <span class="status-pill status-pending">Q2 2026</span>
+                </div>
+                <div class="business-title">
+                  <h3>Annual Family Council Meeting Minutes</h3>
+                  <p>Resolutions approved during the Q2 2026 Family Leadership Assembly.</p>
+                </div>
+                <button class="btn btn-secondary" style="margin-top:1rem; width:100%;" onclick="showToast('Opening Meeting Record...')"><i class="fa-solid fa-file-lines"></i> Read Minutes</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: MEMBER DETAIL INSPECTOR -->
+  <div class="modal-backdrop" id="member-detail-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="inspect-member-name">Member Credentials</h3>
+        <button class="modal-close" onclick="closeModal('member-detail-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="inspect-member-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;">
+        <button class="btn btn-primary" onclick="closeModal('member-detail-modal')">Close Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD TRANSACTION -->
+  <div class="modal-backdrop" id="transaction-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Log New Transaction</h3>
+        <button class="modal-close" onclick="closeModal('transaction-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-transaction" onsubmit="handleCreateTransaction(event)">
+        <div class="form-group">
+          <label>Transaction Title</label>
+          <input type="text" id="tx-title" class="form-control" placeholder="e.g. Dividend Distribution or Property Tax" required>
+        </div>
+        <div class="form-group">
+          <label>Transaction Type</label>
+          <select id="tx-type" class="form-control" required>
+            <option value="INCOME">Income / Revenue</option>
+            <option value="EXPENSE">Expense / Expenditure</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Family Member</label>
+          <select id="tx-member" class="form-control" required>
+            <!-- Filled dynamically -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="tx-category" class="form-control" placeholder="e.g. Real Estate, Dividend, Education, Maintenance" required>
+        </div>
+        <div class="form-group">
+          <label>Amount ($ USD)</label>
+          <input type="number" step="0.01" id="tx-amount" class="form-control" placeholder="5000.00" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('transaction-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD MEMBER -->
+  <div class="modal-backdrop" id="member-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add Family Member</h3>
+        <button class="modal-close" onclick="closeModal('member-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-member" onsubmit="handleCreateMember(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="mem-name" class="form-control" placeholder="e.g. David Nguyen" required>
+        </div>
+        <div class="form-group">
+          <label>Family Branch / Node</label>
+          <select id="mem-node" class="form-control" required>
+            <option value="Main Household">Main Household (Đại Gia Đình)</option>
+            <option value="Real Estate Branch">Real Estate Branch</option>
+            <option value="Tech & Logistics Branch">Tech & Logistics Branch</option>
+            <option value="Heritage & Hospitality Branch">Heritage Branch</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select id="mem-role" class="form-control" required>
+            <option value="MEMBER">Member</option>
+            <option value="FAMILY_LEADER">Family Leader</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Occupation / Title</label>
+          <input type="text" id="mem-occ" class="form-control" placeholder="e.g. Managing Director / Software Engineer">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" id="mem-phone" class="form-control" placeholder="+1 (555) 234-5678">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('member-modal')">Cancel</button>
+          <button type="submit" class="btn btn-emerald">Add Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD BUSINESS -->
+  <div class="modal-backdrop" id="business-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add Business Entity</h3>
+        <button class="modal-close" onclick="closeModal('business-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-business" onsubmit="handleCreateBusiness(event)">
+        <div class="form-group">
+          <label>Business Name</label>
+          <input type="text" id="biz-name" class="form-control" placeholder="e.g. Nguyen Global Capital" required>
+        </div>
+        <div class="form-group">
+          <label>Industry / Sector</label>
+          <input type="text" id="biz-sector" class="form-control" placeholder="e.g. Private Equity, Real Estate, Retail" required>
+        </div>
+        <div class="form-group">
+          <label>Family Equity Share (%)</label>
+          <input type="number" min="1" max="100" id="biz-share" class="form-control" placeholder="100" required>
+        </div>
+        <div class="form-group">
+          <label>Annual Valuation ($ USD)</label>
+          <input type="number" id="biz-valuation" class="form-control" placeholder="5000000" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('business-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Entity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
